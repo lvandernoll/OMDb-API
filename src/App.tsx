@@ -20,17 +20,17 @@ const App: React.FC = () => {
           <Searchbar setMovies={setMovies} className={styles.search}/>
         </header>
         <div className={styles.content}>
-            <Switch>
-              <Route exact path='/'>
-                <HomePage movies={movies} />
-              </Route>
-              <Route exact path='/movie/:id'>
-                <MoviePage />
-              </Route>
-              <Route>
-                <HomePage movies={movies} />
-              </Route>
-            </Switch>
+          <Switch>
+            <Route exact path='/'>
+              <HomePage movies={movies} />
+            </Route>
+            <Route exact path='/movie/:id'>
+              <MoviePage />
+            </Route>
+            <Route>
+              <HomePage movies={movies} />
+            </Route>
+          </Switch>
         </div>
         <footer className={styles.footer} />
       </Router>
