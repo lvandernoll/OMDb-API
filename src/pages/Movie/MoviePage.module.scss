@@ -1,0 +1,25 @@
+@import 'styles/config';
+
+.movie {
+  &Info {
+    display: flex;
+    margin-top: $defaultSpacing;
+  }
+
+  &Image {
+    margin-right: $defaultSpacing;
+  }
+}
+
+.list {
+  list-style: none;
+
+  &Item {
+    display: flex;
+
+    :first-child {
+      margin-right: 5px;
+      font-weight: bold;
+    }
+  }
+}

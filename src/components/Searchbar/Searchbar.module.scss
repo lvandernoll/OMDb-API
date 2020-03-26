@@ -1,0 +1,73 @@
+@import 'styles/config';
+
+.wrapper {
+  display: flex;
+  position: relative;
+}
+
+.icon {
+  color: $grey;
+  position: absolute;
+  right: $defaultSpacing / 2;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+
+  &:hover {
+    color: $secondary;
+  }
+
+  &Button {
+    border: none;
+    background: none;
+  }
+}
+
+.input {
+  border: 2px solid $grey;
+  border-radius: 3px;
+  width: 100%;
+  padding: 5px;
+
+  &:hover, &:focus {
+    border-color: $secondary;
+
+    + .iconButton .icon {
+      color: $secondary;
+    }
+  }
+}
+
+.history {
+  background: $white;
+  border: 2px solid $secondary;
+  width: 100%;
+  border-top: none;
+  position: absolute;
+  top: calc(100% - 2px); // 2px is the border of the input
+  left: 0;
+  list-style: none;
+
+  &Item {
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    &:hover {
+      background: $lightGrey;
+    }
+
+    &Icon {
+      color: $grey;
+      padding: 2.5px;
+      font-size: 2rem;
+      height: 22px;
+      
+      &:hover {
+        color: $main;
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+@import 'styles/config';
+
+.wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.link {
+  text-decoration: none;
+}
+
+.movie {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: $defaultSpacing;
+  transition: transform .25s ease-out;
+  cursor: pointer;
+  
+  &:hover {
+    transform: scale(1.1);
+  }
+  
+  &Image {
+    height: 250px;
+    width: 250px;
+    background: $lightGrey;
+    padding: $defaultSpacing;
+  }
+  
+  &Title {
+    color: $black;
+    font-size: 1.1rem;
+    margin: 5px 0;
+  }
+
+  &Year {
+    color: $grey;
+  }
+}
