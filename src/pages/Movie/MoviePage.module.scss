@@ -11,15 +11,20 @@
   }
 }
 
-.list {
-  list-style: none;
+.table {
+  &Header {
+    text-align: left;
+    vertical-align: baseline;
+    padding-right: $defaultSpacing;
+    white-space: nowrap;
 
-  &Item {
-    display: flex;
-
-    :first-child {
-      margin-right: 5px;
-      font-weight: bold;
+    &Large {
+      background: $lightGrey;
+      padding: 5px;
     }
   }
+}
+
+.ratings {
+  margin-top: $defaultSpacing;
 }

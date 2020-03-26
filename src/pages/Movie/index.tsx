@@ -23,84 +23,30 @@ const MoviePage: React.FC = () => {
           <h1>{movie.Title}</h1>
           <div className={styles.movieInfo}>
             {movie.Poster !== 'N/A' && <img className={styles.movieImage} src={movie.Poster} alt={movie.Title} />}
-            <ul className={styles.list}>
-              <li className={styles.listItem}>
-                <span>Year:</span>
-                <span>{movie.Year}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Rated:</span>
-                <span>{movie.Rated}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Released:</span>
-                <span>{movie.Released}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Runtime:</span>
-                <span>{movie.Runtime}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Genre:</span>
-                <span>{movie.Genre}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Director:</span>
-                <span>{movie.Director}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Writer:</span>
-                <span>{movie.Writer}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Actors:</span>
-                <span>{movie.Actors}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Plot:</span>
-                <p>{movie.Plot}</p>
-              </li>
-              <li className={styles.listItem}>
-                <span>Language:</span>
-                <span>{movie.Language}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Country:</span>
-                <span>{movie.Country}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Awards:</span>
-                <span>{movie.Awards}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Metascore:</span>
-                <span>{movie.Metascore}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>imdb rating:</span>
-                <span>{movie.imdbRating}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>imdb votes:</span>
-                <span>{movie.imdbVotes}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>DVD released:</span>
-                <span>{movie.DVD}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>BoxOffice:</span>
-                <span>{movie.BoxOffice}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Production:</span>
-                <span>{movie.Production}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Website:</span>
-                <span>{movie.Website}</span>
-              </li>
-            </ul>
+            <table className={styles.table}>
+              <th className={`${styles.tableHeader} ${styles.tableHeaderLarge}`}colSpan={2}>{'Info'}</th>
+              {Object.keys(movie).map((key, i) => {
+                const value = Object.values(movie)[i];
+                if(key !== 'Title' && key !== 'Poster' && key !== 'Response' && key !== 'imdbID'
+                  && key !== 'imdbRating' && key !== 'imdbVotes' && key !== 'Type'
+                  && typeof value === 'string' && value !== 'N/A') {
+                  return (
+                    <tr key={i}>
+                      <th className={styles.tableHeader}>{key}</th>
+                      <td>{value}</td>
+                    </tr>
+                  )
+                }
+                return false;
+              })}
+              <th className={`${styles.tableHeader} ${styles.tableHeaderLarge}`} colSpan={2}>{'Ratings'}</th>
+              {movie.Ratings && movie.Ratings.map((rating, i) =>
+                <tr key={i}>
+                  <th className={styles.tableHeader}>{rating.Source}</th>
+                  <td>{rating.Value}</td>
+                </tr>
+              )}
+            </table>
           </div>
         </>
       }

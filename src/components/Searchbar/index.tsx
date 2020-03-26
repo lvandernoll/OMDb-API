@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './Searchbar.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -7,7 +7,7 @@ import { useHistory } from 'react-router-dom';
 
 interface Props {
   className?: string,
-  setMovies: Dispatch<SetStateAction<ShortMovie[]>>,
+  setMovies: (shortMovies: ShortMovie[]) => void,
 }
 
 const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
@@ -19,7 +19,7 @@ const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
   const search = () => {
     if(value) {
       browserHistory.push('/');
-      const newHistory: string[] = history;
+      const newHistory: string[] = [...history];
       newHistory.unshift(value);
       if(newHistory.length > 10) {
         newHistory.pop();
@@ -50,7 +50,7 @@ const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
       </button>
       {searchOpened && history &&
         <ul className={styles.history}>
-          {history.map((item, i) => 
+          {history.map((item, i) =>
             <li className={styles.historyItem} key={i}
               onMouseDown={() => {
                 setValue(item);
