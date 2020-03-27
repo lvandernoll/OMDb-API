@@ -10,6 +10,7 @@
 .header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   padding: 0 $defaultSpacing;
   background: $main;
   height: 50px;
@@ -20,8 +21,18 @@
   height: 85%;
 }
 
+.icon {
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: $white;
+  transition: .25s transform ease-out;
+
+  &:hover {
+    transform: scale(1.2);
+  }
+}
+
 .content {
-  max-width: $siteMaxWidth;
   margin: 0 auto;
   padding: $defaultSpacing;
 }

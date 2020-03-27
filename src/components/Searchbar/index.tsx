@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import styles from './Searchbar.module.scss';
+import React, { useState, FormEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { ShortMovie } from 'interfaces';
 import { useHistory } from 'react-router-dom';
+import { ShortMovie } from 'interfaces';
+import { searchMovies } from 'api';
+import styles from './Searchbar.module.scss';
 
 interface Props {
   className?: string,
@@ -16,7 +17,7 @@ const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
   const [searchOpened, setSearchOpened] = useState<boolean>(false);
   const browserHistory = useHistory();
 
-  const search = () => {
+  const search = async () => {
     if(value) {
       browserHistory.push('/');
       const newHistory: string[] = [...history];
@@ -25,23 +26,25 @@ const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
         newHistory.pop();
       }
       setHistory(newHistory);
-      const apiUrl: string = 'http://www.omdbapi.com';
-      const apiKey: string | undefined = process.env.REACT_APP_API_KEY;
-      fetch(encodeURI(`${apiUrl}?apiKey=${apiKey}&s=${value}`))
-      .then(response => response.json())
-      .then(data => setMovies(data.Search))
-      .catch(console.error);
+      const data = await searchMovies(value);
+      setMovies(data.Search || []);
+    }
+  }
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    search();
+    setSearchOpened(false);
+    const searchElement: HTMLInputElement | null = document.querySelector('#search');
+    if(searchElement) {
+      searchElement.blur();
     }
   }
 
   return (
-    <form autoComplete='off' className={`${styles.wrapper} ${className || ''}`} onSubmit={e => {
-      e.preventDefault();
-      search();
-      setSearchOpened(false);
-    }}>
-      <input name='search' id='search' autoComplete='false' className={styles.input}
-        onClick={() => setSearchOpened(true)}
+    <form onSubmit={onSubmit} autoComplete='off' className={`${styles.wrapper} ${className || ''}`}>
+      <input name='search' id='search' className={styles.input} placeholder={'Search...'}
+        onFocus={() => setSearchOpened(true)}
         onBlur={() => setSearchOpened(false)}
         onChange={e => setValue(e.currentTarget.value)}
         value={value} />

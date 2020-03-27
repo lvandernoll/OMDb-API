@@ -1,5 +1,23 @@
 @import 'styles/config';
 
+.title {
+  display: flex;
+  align-items: center;
+  max-width: 750px;
+}
+
+.star {
+  cursor: pointer;
+  color: $grey;
+  font-size: 1.3rem;
+  line-height: 2;
+  margin-left: $defaultSpacing / 2;
+
+  &Active, &:hover {
+    color: $main;
+  }
+}
+
 .movie {
   &Info {
     display: flex;
@@ -17,6 +35,7 @@
     vertical-align: baseline;
     padding-right: $defaultSpacing;
     white-space: nowrap;
+    font-weight: bold;
 
     &Large {
       background: $lightGrey;

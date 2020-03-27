@@ -3,38 +3,51 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
+  Link,
 } from 'react-router-dom';
 import styles from './App.module.scss';
-import HomePage from 'pages/Home';
+import OverviewPage from 'pages/Overview';
 import MoviePage from 'pages/Movie';
 import Searchbar from 'components/Searchbar';
 import { ShortMovie } from 'interfaces';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar, faHome } from '@fortawesome/free-solid-svg-icons';
 
 const App: React.FC = () => {
   const [movies, setMovies] = useState<ShortMovie[]>([]);
+  const [favMovies, setFavMovies] = useState<ShortMovie[]>([]);
 
   return (
-    <div className={styles.wrapper}>
-      <Router>
+    <Router>
+      <div className={styles.wrapper}>
         <header className={styles.header}>
-          <Searchbar setMovies={setMovies} className={styles.search}/>
+          <Link to='/' onClick={() => setMovies([])}>
+            <FontAwesomeIcon icon={faHome} className={styles.icon} />
+          </Link>
+          <Searchbar setMovies={setMovies} className={styles.search} />
+          <Link to='/favorites'>
+            <FontAwesomeIcon icon={faStar} className={styles.icon} />
+          </Link>
         </header>
         <div className={styles.content}>
           <Switch>
             <Route exact path='/'>
-              <HomePage movies={movies} />
+              <OverviewPage showMovies={movies} favMovies={favMovies} setFavMovies={setFavMovies} />
             </Route>
             <Route exact path='/movie/:id'>
-              <MoviePage />
+              <MoviePage favMovies={favMovies} setFavMovies={setFavMovies} />
+            </Route>
+            <Route exact path='/favorites'>
+              <OverviewPage showMovies={favMovies} favMovies={favMovies} setFavMovies={setFavMovies} />
             </Route>
             <Route>
-              <HomePage movies={movies} />
+              <OverviewPage showMovies={movies} favMovies={favMovies} setFavMovies={setFavMovies} />
             </Route>
           </Switch>
         </div>
         <footer className={styles.footer} />
-      </Router>
-    </div>
+      </div>
+    </Router>
   );
 }
 

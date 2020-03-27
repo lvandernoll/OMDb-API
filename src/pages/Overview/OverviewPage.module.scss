@@ -3,10 +3,28 @@
 .wrapper {
   display: flex;
   flex-wrap: wrap;
+  justify-content: space-evenly;
 }
 
 .link {
   text-decoration: none;
+}
+
+.star {
+  position: absolute;
+  top: 0;
+  right: 0;
+  color: $grey;
+  background: $white;
+  height: 50px;
+  width: 25px !important;
+  padding: 0 2.5px;
+  box-shadow: -2px 2px 4px rgba($black, .2);
+  border-radius: 0 0 0 3px;
+
+  &Active, &:hover {
+    color: $main;
+  }
 }
 
 .movie {
@@ -22,8 +40,13 @@
   }
   
   &Image {
-    height: 250px;
-    width: 250px;
+    &Wrapper {
+      position: relative;
+    }
+
+    border-radius: 3px;
+    min-height: 300px;
+    min-width: 300px;
     background: $lightGrey;
     padding: $defaultSpacing;
   }
@@ -32,6 +55,8 @@
     color: $black;
     font-size: 1.1rem;
     margin: 5px 0;
+    max-width: 300px;
+    text-align: center;
   }
 
   &Year {
