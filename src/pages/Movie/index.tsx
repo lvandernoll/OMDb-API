@@ -29,7 +29,7 @@ const MoviePage: React.FC<Props> = ({ favMovies, setFavMovies }) => {
     } else {
       history.push('/');
     }
-  }, [id])
+  }, [id, history])
 
   const toggleFav = (movie: ShortMovie) => {
     const favedMovie: ShortMovie[] = favMovies.filter(a => a.imdbID === movie.imdbID);

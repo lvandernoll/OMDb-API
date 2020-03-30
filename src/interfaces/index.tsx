@@ -37,3 +37,8 @@ export interface FullMovie {
   Production: string,
   Website: string,
 }
+
+export interface HelloWorld {
+  type: string,
+  payload: string,
+}
