@@ -38,7 +38,15 @@ export interface FullMovie {
   Website: string,
 }
 
-export interface HelloWorld {
+export interface HelloWorldAction {
   type: string,
   payload: string,
+}
+
+export interface SearchMoviesAction {
+  type: string,
+  payload: {
+    query?: string,
+    movies?: ShortMovie[],
+  },
 }

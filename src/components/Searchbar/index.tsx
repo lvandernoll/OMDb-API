@@ -2,22 +2,23 @@ import React, { useState, FormEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useHistory } from 'react-router-dom';
-import { ShortMovie } from 'interfaces';
-import { searchMovies } from 'api';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { requestSearchMovies } from 'actions';
 import styles from './Searchbar.module.scss';
 
 interface Props {
   className?: string,
-  setMovies: (shortMovies: ShortMovie[]) => void,
+  requestSearchMovies: (query: string) => Object,
 }
 
-const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
+const Searchbar: React.FC<Props> = ({ className, requestSearchMovies }) => {
   const [value, setValue] = useState<string>('');
   const [history, setHistory] = useState<string[]>([]);
   const [searchOpened, setSearchOpened] = useState<boolean>(false);
   const browserHistory = useHistory();
 
-  const search = async () => {
+  const search = () => {
     if(value) {
       browserHistory.push('/');
       const newHistory: string[] = [...history];
@@ -26,8 +27,7 @@ const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
         newHistory.pop();
       }
       setHistory(newHistory);
-      const data = await searchMovies(value);
-      setMovies(data.Search || []);
+      requestSearchMovies(value);
     }
   }
 
@@ -77,4 +77,6 @@ const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
   )
 }
 
-export default Searchbar;
+const mapDispatchToProps = (dispatch: any) => bindActionCreators({ requestSearchMovies }, dispatch);
+
+export default connect(null, mapDispatchToProps)(Searchbar);

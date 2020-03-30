@@ -1,9 +1,9 @@
 import { RECIEVE_HELLO_WORLD } from 'actions';
-import { HelloWorld } from 'interfaces';
+import { HelloWorldAction } from 'interfaces';
 
 export const helloWorldReducer = (
   state: string = 'Initial state',
-  action: HelloWorld,
+  action: HelloWorldAction,
 ) => {
   switch(action.type) {
     case RECIEVE_HELLO_WORLD:
