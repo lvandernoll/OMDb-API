@@ -58,3 +58,10 @@ export interface MovieDetailAction {
     movie?: ShortMovie,
   },
 }
+
+export interface FavoriteMoviesAction {
+  type: string,
+  payload: {
+    movies: ShortMovie[],
+  },
+}

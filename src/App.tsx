@@ -9,7 +9,8 @@ import { Provider } from 'react-redux';
 import { faHome, faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MoviePage from 'pages/Movie';
-import OverviewPage from 'pages/Overview';
+import SearchPage from 'pages/Search';
+import FavoritesPage from 'pages/Favorites';
 import Searchbar from 'components/Searchbar';
 import styles from './App.module.scss';
 import { ShortMovie } from 'interfaces';
@@ -37,16 +38,16 @@ const App: React.FC = () => {
                 <h1>{'Homepage'}</h1>
               </Route>
               <Route exact path='/search'>
-                <OverviewPage favMovies={favMovies} setFavMovies={setFavMovies} />
+                <SearchPage />
               </Route>
               <Route exact path='/movie/:id'>
                 <MoviePage favMovies={favMovies} setFavMovies={setFavMovies} />
               </Route>
               <Route exact path='/favorites'>
-                <OverviewPage favMovies={favMovies} setFavMovies={setFavMovies} />
+                <FavoritesPage />
               </Route>
               <Route>
-                <OverviewPage favMovies={favMovies} setFavMovies={setFavMovies} />
+                <SearchPage />
               </Route>
             </Switch>
           </div>
