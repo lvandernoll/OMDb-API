@@ -1,9 +1,9 @@
 import React, { useState, FormEvent } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useHistory } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { requestSearchMovies } from 'actions';
 import styles from './Searchbar.module.scss';
 
@@ -20,7 +20,7 @@ const Searchbar: React.FC<Props> = ({ className, requestSearchMovies }) => {
 
   const search = () => {
     if(value) {
-      browserHistory.push('/');
+      browserHistory.push('/search');
       const newHistory: string[] = [...history];
       newHistory.unshift(value);
       if(newHistory.length > 10) {

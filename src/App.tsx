@@ -1,23 +1,23 @@
 import React, { useState } from 'react';
 import {
+  Link,
+  Route,
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link,
 } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import store from 'store';
-import styles from './App.module.scss';
-import OverviewPage from 'pages/Overview';
-import MoviePage from 'pages/Movie';
-import Searchbar from 'components/Searchbar';
-import { ShortMovie } from 'interfaces';
+import { faHome, faStar } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faStar, faHome } from '@fortawesome/free-solid-svg-icons';
+import MoviePage from 'pages/Movie';
+import OverviewPage from 'pages/Overview';
+import Searchbar from 'components/Searchbar';
+import styles from './App.module.scss';
+import { ShortMovie } from 'interfaces';
+import store from 'store';
 
 const App: React.FC = () => {
   const [favMovies, setFavMovies] = useState<ShortMovie[]>([]);
-// Onclick home button clear searched movies
+
   return (
     <Provider store={store}>
       <Router>
@@ -34,6 +34,9 @@ const App: React.FC = () => {
           <div className={styles.content}>
             <Switch>
               <Route exact path='/'>
+                <h1>{'Homepage'}</h1>
+              </Route>
+              <Route exact path='/search'>
                 <OverviewPage favMovies={favMovies} setFavMovies={setFavMovies} />
               </Route>
               <Route exact path='/movie/:id'>
