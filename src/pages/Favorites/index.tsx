@@ -13,6 +13,6 @@ const FavoritesPage: React.FC<Props> = ({ movies }) => {
   )
 }
 
-const mapStateToProps = (state: any) => ({ movies: state.favoriteMoviesReducer });
+const mapStateToProps = (state: any) => ({ movies: state.favoriteMovies });
 
 export default connect(mapStateToProps)(FavoritesPage);

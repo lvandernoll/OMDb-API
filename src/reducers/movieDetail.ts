@@ -1,7 +1,7 @@
 import { RECIEVE_MOVIE_DETAIL } from 'actions';
 import { MovieDetailAction, FullMovie } from 'interfaces';
 
-const defaultState = {
+const defaultState: FullMovie = {
   Title: '',
   Year: '',
   Rated: '',
@@ -31,10 +31,14 @@ const defaultState = {
 export const movieDetailReducer = (
   state: FullMovie = defaultState,
   action: MovieDetailAction,
-) => {
+): FullMovie => {
   switch(action.type) {
     case RECIEVE_MOVIE_DETAIL:
-      return action.payload.movie;
+      if(action.payload.movie !== undefined) {
+        return action.payload.movie;
+      } else {
+        return defaultState;
+      }
     default:
       return state;
   }

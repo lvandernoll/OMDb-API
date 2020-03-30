@@ -2,11 +2,11 @@ import React, { MouseEvent } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { ShortMovie } from 'interfaces';
-import styles from './MoviesOverview.module.scss';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { recieveFavoriteMovies } from 'actions';
 import { connect } from 'react-redux';
+import styles from './MoviesOverview.module.scss';
 
 interface Props {
   movies: ShortMovie[],
@@ -57,7 +57,7 @@ const MoviesOverview: React.FC<Props> = ({ movies, favoriteMovies, recieveFavori
   )
 }
 
-const mapStateToProps = (state: any) => ({ favoriteMovies: state.favoriteMoviesReducer });
+const mapStateToProps = (state: any) => ({ favoriteMovies: state.favoriteMovies });
 const mapDispatchToProps = (dispatch: any) => bindActionCreators({ recieveFavoriteMovies }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoviesOverview);

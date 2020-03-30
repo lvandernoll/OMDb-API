@@ -1,34 +1,26 @@
 import React, { useEffect, MouseEvent } from 'react';
 import { FullMovie, ShortMovie } from 'interfaces';
 import { useParams, useHistory } from 'react-router-dom';
-import styles from './MoviePage.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { requestMovieDetail } from 'actions';
+import { requestMovieDetail, recieveFavoriteMovies } from 'actions';
+import styles from './MoviePage.module.scss';
 
 interface Props {
-  favMovies: ShortMovie[],
+  favoriteMovies: ShortMovie[],
   movie: FullMovie,
-  setFavMovies: (movies: ShortMovie[]) => void,
   requestMovieDetail: (id: string) => Object,
+  recieveFavoriteMovies: (movies: ShortMovie[]) => Object,
 }
 
-const MoviePage: React.FC<Props> = ({ favMovies, setFavMovies, requestMovieDetail, movie }) => {
+const MoviePage: React.FC<Props> = ({ favoriteMovies, recieveFavoriteMovies, requestMovieDetail, movie }) => {
   const { id } = useParams();
   const history = useHistory();
 
   useEffect(() => {
     if(id) {
-      // (async () => {
-      //   const data = await getMovieById(id);
-      //   if(data.Response === 'True') {
-      //     setMovie(data);
-      //   } else {
-      //     history.push('/');
-      //   }
-      // })();
       requestMovieDetail(id);
     } else {
       history.push('/');
@@ -36,17 +28,19 @@ const MoviePage: React.FC<Props> = ({ favMovies, setFavMovies, requestMovieDetai
   }, [id, history, requestMovieDetail])
 
   const toggleFav = (movie: ShortMovie) => {
-    const favedMovie: ShortMovie[] = favMovies.filter(a => a.imdbID === movie.imdbID);
+    const favedMovie: ShortMovie[] = favoriteMovies.filter(a => a.imdbID === movie.imdbID);
     if(favedMovie.length > 0) {
-      const newFavMovies = [...favMovies];
-      newFavMovies.splice(favMovies.indexOf(favedMovie[0]), 1);
-      setFavMovies(newFavMovies);
+      const newfavoriteMovies = [...favoriteMovies];
+      newfavoriteMovies.splice(favoriteMovies.indexOf(favedMovie[0]), 1);
+      recieveFavoriteMovies(newfavoriteMovies);
     } else {
-      const newFavMovies = [...favMovies];
-      newFavMovies.push(movie);
-      setFavMovies(newFavMovies);
+      const newfavoriteMovies = [...favoriteMovies];
+      newfavoriteMovies.push(movie);
+      recieveFavoriteMovies(newfavoriteMovies);
     }
   }
+
+  const isFavorited = (movieId: string) => favoriteMovies.filter(a => a.imdbID === movieId).length > 0;
 
   return (
     <>
@@ -54,7 +48,7 @@ const MoviePage: React.FC<Props> = ({ favMovies, setFavMovies, requestMovieDetai
         <span>
           {movie.Title}
         </span>
-        <FontAwesomeIcon icon={faStar} className={`${styles.star} ${favMovies.filter(a => a.imdbID === movie.imdbID).length > 0 ? styles.starActive : ''}`}
+        <FontAwesomeIcon icon={faStar} className={`${styles.star} ${isFavorited(movie.imdbID) ? styles.starActive : ''}`}
           onClick={(e: MouseEvent) => {
             e.preventDefault();
             toggleFav(movie);
@@ -94,7 +88,7 @@ const MoviePage: React.FC<Props> = ({ favMovies, setFavMovies, requestMovieDetai
   )
 }
 
-const mapStateToProps = (state: any) => ({ movie: state.movieDetailReducer });
-const mapDispatchToProps = (dispatch: any) => bindActionCreators({ requestMovieDetail }, dispatch);
+const mapStateToProps = (state: any) => ({ movie: state.movieDetail, favoriteMovies: state.favoriteMovies });
+const mapDispatchToProps = (dispatch: any) => bindActionCreators({ requestMovieDetail, recieveFavoriteMovies }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoviePage);

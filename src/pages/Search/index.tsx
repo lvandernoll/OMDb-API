@@ -13,6 +13,6 @@ const SearchPage: React.FC<Props> = ({ movies }) => {
   )
 }
 
-const mapStateToProps = (state: any) => ({ movies: state.searchMoviesReducer });
+const mapStateToProps = (state: any) => ({ movies: state.searchMovies });
 
 export default connect(mapStateToProps)(SearchPage);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Link,
   Route,
@@ -13,12 +13,9 @@ import SearchPage from 'pages/Search';
 import FavoritesPage from 'pages/Favorites';
 import Searchbar from 'components/Searchbar';
 import styles from './App.module.scss';
-import { ShortMovie } from 'interfaces';
 import store from 'store';
 
 const App: React.FC = () => {
-  const [favMovies, setFavMovies] = useState<ShortMovie[]>([]);
-
   return (
     <Provider store={store}>
       <Router>
@@ -41,7 +38,7 @@ const App: React.FC = () => {
                 <SearchPage />
               </Route>
               <Route exact path='/movie/:id'>
-                <MoviePage favMovies={favMovies} setFavMovies={setFavMovies} />
+                <MoviePage />
               </Route>
               <Route exact path='/favorites'>
                 <FavoritesPage />

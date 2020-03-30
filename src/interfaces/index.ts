@@ -55,7 +55,7 @@ export interface MovieDetailAction {
   type: string,
   payload: {
     id?: string,
-    movie?: ShortMovie,
+    movie?: FullMovie,
   },
 }
 
