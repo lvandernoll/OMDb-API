@@ -1,5 +1,5 @@
 import React, { useEffect, MouseEvent } from 'react';
-import { FullMovie, ShortMovie } from 'interfaces';
+import { ShortMovie, FullMovie } from 'interfaces';
 import { useParams, useHistory } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-solid-svg-icons';
@@ -8,15 +8,16 @@ import { bindActionCreators } from 'redux';
 import { requestMovieDetail, recieveFavoriteMovies } from 'actions';
 import { State } from 'reducers';
 import styles from './MoviePage.module.scss';
+import { MovieDetailState } from 'reducers/movieDetail';
 
 interface Props {
   favoriteMovies: ShortMovie[],
-  movie: FullMovie,
+  movieState: MovieDetailState,
   requestMovieDetail: (id: string) => Object,
   recieveFavoriteMovies: (movies: ShortMovie[]) => Object,
 }
 
-const MoviePage: React.FC<Props> = ({ favoriteMovies, recieveFavoriteMovies, requestMovieDetail, movie }) => {
+const MoviePage: React.FC<Props> = ({ favoriteMovies, recieveFavoriteMovies, requestMovieDetail, movieState }) => {
   const { id } = useParams();
   const history = useHistory();
 
@@ -26,9 +27,15 @@ const MoviePage: React.FC<Props> = ({ favoriteMovies, recieveFavoriteMovies, req
     } else {
       history.push('/');
     }
-  }, [id, history, requestMovieDetail])
+  }, [id, requestMovieDetail, history]);
 
-  const toggleFav = (movie: ShortMovie) => {
+  useEffect(() => {
+    if(movieState.error) {
+      history.push('/');
+    }
+  }, [movieState.error, history]);
+
+  const toggleFav = (movie: FullMovie) => {
     const favedMovie: ShortMovie[] = favoriteMovies.filter(a => a.imdbID === movie.imdbID);
     if(favedMovie.length > 0) {
       const newfavoriteMovies = [...favoriteMovies];
@@ -45,51 +52,63 @@ const MoviePage: React.FC<Props> = ({ favoriteMovies, recieveFavoriteMovies, req
 
   return (
     <>
-      <h1 className={styles.title}>
-        <span>
-          {movie.Title}
-        </span>
-        <FontAwesomeIcon icon={faStar} className={`${styles.star} ${isFavorited(movie.imdbID) ? styles.starActive : ''}`}
-          onClick={(e: MouseEvent) => {
-            e.preventDefault();
-            toggleFav(movie);
-          }}
-        />
-      </h1>
-      <div className={styles.movieInfo}>
-        {movie.Poster !== 'N/A' && <img className={styles.movieImage} src={movie.Poster} alt={movie.Title} />}
-        <table className={styles.table}>
-          <tbody>
-            <td className={`${styles.tableHeader} ${styles.tableHeaderLarge}`}colSpan={2}>{'Info'}</td>
-            {Object.keys(movie).map((key, i) => {
-              const value = Object.values(movie)[i];
-              if(key !== 'Title' && key !== 'Poster' && key !== 'Response' && key !== 'imdbID'
-                && key !== 'imdbRating' && key !== 'imdbVotes' && key !== 'Type'
-                && typeof value === 'string' && value !== 'N/A') {
-                return (
+      {movieState.isLoading || !movieState.movie ?
+        <span>{'Loading...'}</span>
+        :
+        <>
+          <h1 className={styles.title}>
+            <span>
+              {movieState.movie.Title}
+            </span>
+            <FontAwesomeIcon icon={faStar} className={`${styles.star} ${isFavorited(movieState.movie.imdbID) ? styles.starActive : ''}`}
+              onClick={(e: MouseEvent) => {
+                e.preventDefault();
+                toggleFav(movieState.movie);
+              }}
+            />
+          </h1>
+          <div className={styles.movieInfo}>
+            {movieState.movie.Poster !== 'N/A' && <img className={styles.movieImage} src={movieState.movie.Poster} alt={movieState.movie.Title} />}
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th className={`${styles.tableHeader} ${styles.tableHeaderLarge}`} colSpan={2}>{'Info'}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(movieState.movie).map((key, i) => {
+                  const value = Object.values(movieState.movie)[i];
+                  if(key !== 'Title' && key !== 'Poster' && key !== 'Response' && key !== 'imdbID'
+                    && key !== 'imdbRating' && key !== 'imdbVotes' && key !== 'Type'
+                    && typeof value === 'string' && value !== 'N/A') {
+                    return (
+                      <tr key={i}>
+                        <td className={styles.tableHeader}>{key}</td>
+                        <td>{value}</td>
+                      </tr>
+                    )
+                  }
+                  return false;
+                })}
+                <tr>
+                  <td className={`${styles.tableHeader} ${styles.tableHeaderLarge}`} colSpan={2}>{'Ratings'}</td>
+                </tr>
+                {movieState.movie.Ratings && movieState.movie.Ratings.map((rating, i) =>
                   <tr key={i}>
-                    <td className={styles.tableHeader}>{key}</td>
-                    <td>{value}</td>
+                    <td className={styles.tableHeader}>{rating.Source}</td>
+                    <td>{rating.Value}</td>
                   </tr>
-                )
-              }
-              return false;
-            })}
-            <td className={`${styles.tableHeader} ${styles.tableHeaderLarge}`} colSpan={2}>{'Ratings'}</td>
-            {movie.Ratings && movie.Ratings.map((rating, i) =>
-              <tr key={i}>
-                <td className={styles.tableHeader}>{rating.Source}</td>
-                <td>{rating.Value}</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
+      }
     </>
   )
 }
 
-const mapStateToProps = (state: State) => ({ movie: state.movieDetail, favoriteMovies: state.favoriteMovies });
+const mapStateToProps = (state: State) => ({ movieState: state.movieDetail, favoriteMovies: state.favoriteMovies });
 const mapDispatchToProps = (dispatch: any) => bindActionCreators({ requestMovieDetail, recieveFavoriteMovies }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoviePage);

@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
-import { ShortMovie, FullMovie } from 'interfaces';
+import { ShortMovie } from 'interfaces';
 import { searchMoviesReducer } from './searchMovies';
-import { movieDetailReducer } from './movieDetail';
+import { movieDetailReducer, MovieDetailState } from './movieDetail';
 import { favoriteMoviesReducer } from './favoriteMovies';
 
 export interface State {
   searchMovies: ShortMovie[],
-  movieDetail: FullMovie,
+  movieDetail: MovieDetailState,
   favoriteMovies: ShortMovie[],
 }
 

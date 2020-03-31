@@ -53,9 +53,12 @@ export interface SearchMoviesAction {
 
 export interface MovieDetailAction {
   type: string,
+  error: boolean,
+  isLoading: boolean,
   payload: {
     id?: string,
     movie?: FullMovie,
+    errorMessage?: string,
   },
 }
 
