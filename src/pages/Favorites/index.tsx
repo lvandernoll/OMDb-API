@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShortMovie } from 'interfaces';
 import { connect } from 'react-redux';
+import { State } from 'reducers';
 import MoviesOverview from 'components/MoviesOverview';
 
 interface Props {
@@ -13,6 +14,6 @@ const FavoritesPage: React.FC<Props> = ({ movies }) => {
   )
 }
 
-const mapStateToProps = (state: any) => ({ movies: state.favoriteMovies });
+const mapStateToProps = (state: State) => ({ movies: state.favoriteMovies });
 
 export default connect(mapStateToProps)(FavoritesPage);

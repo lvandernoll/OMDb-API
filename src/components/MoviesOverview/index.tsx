@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 import { recieveFavoriteMovies } from 'actions';
 import { connect } from 'react-redux';
+import { State } from 'reducers';
 import styles from './MoviesOverview.module.scss';
 
 interface Props {
@@ -57,7 +58,7 @@ const MoviesOverview: React.FC<Props> = ({ movies, favoriteMovies, recieveFavori
   )
 }
 
-const mapStateToProps = (state: any) => ({ favoriteMovies: state.favoriteMovies });
+const mapStateToProps = (state: State) => ({ favoriteMovies: state.favoriteMovies });
 const mapDispatchToProps = (dispatch: any) => bindActionCreators({ recieveFavoriteMovies }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoviesOverview);

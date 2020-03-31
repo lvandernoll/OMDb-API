@@ -6,6 +6,7 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { requestMovieDetail, recieveFavoriteMovies } from 'actions';
+import { State } from 'reducers';
 import styles from './MoviePage.module.scss';
 
 interface Props {
@@ -88,7 +89,7 @@ const MoviePage: React.FC<Props> = ({ favoriteMovies, recieveFavoriteMovies, req
   )
 }
 
-const mapStateToProps = (state: any) => ({ movie: state.movieDetail, favoriteMovies: state.favoriteMovies });
+const mapStateToProps = (state: State) => ({ movie: state.movieDetail, favoriteMovies: state.favoriteMovies });
 const mapDispatchToProps = (dispatch: any) => bindActionCreators({ requestMovieDetail, recieveFavoriteMovies }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoviePage);
