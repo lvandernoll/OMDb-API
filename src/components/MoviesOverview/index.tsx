@@ -4,33 +4,34 @@ import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { ShortMovie } from 'interfaces';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import { recieveFavoriteMovies } from 'actions';
+import { requestFavoriteMoviesSuccess } from 'actions';
 import { connect } from 'react-redux';
 import { State } from 'reducers';
+import { FavoriteMoviesState } from 'reducers/favoriteMovies';
 import styles from './MoviesOverview.module.scss';
 
 interface Props {
   movies: ShortMovie[],
-  favoriteMovies: ShortMovie[],
+  favoriteMoviesState: FavoriteMoviesState,
   recieveFavoriteMovies: (movies: ShortMovie[]) => Object,
 }
 
-const MoviesOverview: React.FC<Props> = ({ movies, favoriteMovies, recieveFavoriteMovies }) => {
+const MoviesOverview: React.FC<Props> = ({ movies, favoriteMoviesState, recieveFavoriteMovies }) => {
 
   const toggleFav = (movie: ShortMovie) => {
-    const favedMovie: ShortMovie[] = favoriteMovies.filter(a => a.imdbID === movie.imdbID);
+    const favedMovie: ShortMovie[] = favoriteMoviesState.movies.filter(a => a.imdbID === movie.imdbID);
     if(favedMovie.length > 0) {
-      const newfavoriteMovies = [...favoriteMovies];
-      newfavoriteMovies.splice(favoriteMovies.indexOf(favedMovie[0]), 1);
+      const newfavoriteMovies = [...favoriteMoviesState.movies];
+      newfavoriteMovies.splice(favoriteMoviesState.movies.indexOf(favedMovie[0]), 1);
       recieveFavoriteMovies(newfavoriteMovies);
     } else {
-      const newfavoriteMovies = [...favoriteMovies];
+      const newfavoriteMovies = [...favoriteMoviesState.movies];
       newfavoriteMovies.push(movie);
       recieveFavoriteMovies(newfavoriteMovies);
     }
   }
 
-  const isFavorited = (movieId: string) => favoriteMovies.filter(a => a.imdbID === movieId).length > 0;
+  const isFavorited = (movieId: string) => favoriteMoviesState.movies.filter(a => a.imdbID === movieId).length > 0;
 
   return (
     <div className={styles.wrapper}>
@@ -58,7 +59,7 @@ const MoviesOverview: React.FC<Props> = ({ movies, favoriteMovies, recieveFavori
   )
 }
 
-const mapStateToProps = (state: State) => ({ favoriteMovies: state.favoriteMovies });
-const mapDispatchToProps = (dispatch: any) => bindActionCreators({ recieveFavoriteMovies }, dispatch);
+const mapStateToProps = (state: State) => ({ favoriteMoviesState: state.favoriteMovies });
+const mapDispatchToProps = (dispatch: any) => bindActionCreators({ recieveFavoriteMovies: requestFavoriteMoviesSuccess }, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(MoviesOverview);

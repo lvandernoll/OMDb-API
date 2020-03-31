@@ -1,14 +1,23 @@
 import { call, put, takeLatest } from 'redux-saga/effects'
-import { recieveSearchMovies, REQUEST_SEARCH_MOVIES, REQUEST_MOVIE_DETAIL, requestMovieDetailSuccess, requestMovieDetailFailed } from 'actions';
+import { requestSearchMoviesSuccess, REQUEST_SEARCH_MOVIES, REQUEST_MOVIE_DETAIL, requestMovieDetailSuccess, requestMovieDetailFailed, requestSearchMoviesFailed } from 'actions';
 import { searchMovies, getMovieById } from 'api';
 import { SearchMoviesAction, MovieDetailAction } from 'interfaces';
 
 function* fetchMovies(action: SearchMoviesAction) {
-  try {
-    const movies = yield call(searchMovies, action.payload.query || '');
-    yield put(recieveSearchMovies(movies.Search || []));
-  } catch(e) {
-    console.error(e);
+  if(!action.payload.query) {
+    yield put(requestSearchMoviesFailed('No query was provided'));
+  } else {
+    try {
+      const movies = yield call(searchMovies, action.payload.query);
+      if(movies.response === 'False') {
+        yield put(requestSearchMoviesFailed('No movies were found'));
+      } else {
+        yield put(requestSearchMoviesSuccess(movies.Search));
+      }
+    } catch(e) {
+      console.error(e);
+      yield put(requestSearchMoviesFailed('Request failed'));
+    }
   }
 }
 

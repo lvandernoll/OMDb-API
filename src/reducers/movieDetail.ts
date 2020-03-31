@@ -2,12 +2,12 @@ import { REQUEST_MOVIE_DETAIL, REQUEST_MOVIE_DETAIL_SUCCESS, REQUEST_MOVIE_DETAI
 import { MovieDetailAction, FullMovie } from 'interfaces';
 
 export interface MovieDetailState {
-  error: boolean,
   isLoading: boolean,
+  error: boolean,
   movie: FullMovie,
 }
 
-const defaultState: MovieDetailState = {
+const initialState: MovieDetailState = {
   error: false,
   isLoading: false,
   movie: {
@@ -39,7 +39,7 @@ const defaultState: MovieDetailState = {
 }
 
 export const movieDetailReducer = (
-  state: MovieDetailState = defaultState,
+  state: MovieDetailState = initialState,
   action: MovieDetailAction,
 ): MovieDetailState => {
   switch(action.type) {

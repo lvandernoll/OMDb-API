@@ -48,6 +48,7 @@ export interface SearchMoviesAction {
   payload: {
     query?: string,
     movies?: ShortMovie[],
+    errorMessage?: string,
   },
 }
 

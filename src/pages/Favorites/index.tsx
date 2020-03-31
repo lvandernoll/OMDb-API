@@ -1,19 +1,19 @@
 import React from 'react';
-import { ShortMovie } from 'interfaces';
 import { connect } from 'react-redux';
 import { State } from 'reducers';
+import { FavoriteMoviesState } from 'reducers/favoriteMovies';
 import MoviesOverview from 'components/MoviesOverview';
 
 interface Props {
-  movies: ShortMovie[],
+  favoriteMoviesState: FavoriteMoviesState,
 }
 
-const FavoritesPage: React.FC<Props> = ({ movies }) => {
+const FavoritesPage: React.FC<Props> = ({ favoriteMoviesState }) => {
   return (
-    <MoviesOverview movies={movies} />
+    <MoviesOverview movies={favoriteMoviesState.movies} />
   )
 }
 
-const mapStateToProps = (state: State) => ({ movies: state.favoriteMovies });
+const mapStateToProps = (state: State) => ({ favoriteMoviesState: state.favoriteMovies });
 
 export default connect(mapStateToProps)(FavoritesPage);
