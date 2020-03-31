@@ -1,5 +1,23 @@
 @import 'styles/config';
 
+.title {
+  display: flex;
+  align-items: center;
+  max-width: 750px;
+}
+
+.star {
+  cursor: pointer;
+  color: $grey;
+  font-size: 1.3rem;
+  line-height: 2;
+  margin-left: $defaultSpacing / 2;
+
+  &Active, &:hover {
+    color: $main;
+  }
+}
+
 .movie {
   &Info {
     display: flex;
@@ -11,15 +29,21 @@
   }
 }
 
-.list {
-  list-style: none;
+.table {
+  &Header {
+    text-align: left;
+    vertical-align: baseline;
+    padding-right: $defaultSpacing;
+    white-space: nowrap;
+    font-weight: bold;
 
-  &Item {
-    display: flex;
-
-    :first-child {
-      margin-right: 5px;
-      font-weight: bold;
+    &Large {
+      background: $lightGrey;
+      padding: 5px;
     }
   }
+}
+
+.ratings {
+  margin-top: $defaultSpacing;
 }

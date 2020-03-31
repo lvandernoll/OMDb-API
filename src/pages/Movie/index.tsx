@@ -1,111 +1,115 @@
-import React, { useState, useEffect } from 'react';
-import { FullMovie } from 'interfaces';
-import { useParams } from 'react-router-dom';
+import React, { useEffect, MouseEvent } from 'react';
+import { ShortMovie, FullMovie } from 'interfaces';
+import { useParams, useHistory } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { State } from 'reducers';
+import { requestMovieDetail, requestFavoriteMoviesSuccess } from 'actions';
+import { MovieDetailState } from 'reducers/movieDetail';
+import { FavoriteMoviesState } from 'reducers/favoriteMovies';
 import styles from './MoviePage.module.scss';
 
-const MoviePage: React.FC = () => {
+interface Props {
+  movieState: MovieDetailState,
+  favoriteMoviesState: FavoriteMoviesState,
+  requestMovieDetail: (id: string) => Object,
+  recieveFavoriteMovies: (movies: ShortMovie[]) => Object,
+}
+
+const MoviePage: React.FC<Props> = ({ favoriteMoviesState, recieveFavoriteMovies, requestMovieDetail, movieState }) => {
   const { id } = useParams();
-  const [movie, setMovie] = useState<FullMovie>();
+  const history = useHistory();
 
   useEffect(() => {
-    const apiUrl: string = 'http://www.omdbapi.com';
-    const apiKey: string | undefined = process.env.REACT_APP_API_KEY;
-    fetch(encodeURI(`${apiUrl}?apiKey=${apiKey}&i=${id}`))
-    .then(response => response.json())
-    .then(data => setMovie(data))
-    .catch(console.error);
-  }, [])
+    if(id) {
+      requestMovieDetail(id);
+    } else {
+      history.push('/');
+    }
+  }, [id, requestMovieDetail, history]);
+
+  useEffect(() => {
+    if(movieState.error) {
+      history.push('/');
+    }
+  }, [movieState.error, history]);
+
+  const toggleFav = (movie: FullMovie) => {
+    const favedMovie: ShortMovie[] = favoriteMoviesState.movies.filter((a: ShortMovie) => a.imdbID === movie.imdbID);
+    if(favedMovie.length > 0) {
+      const newfavoriteMovies = [...favoriteMoviesState.movies];
+      newfavoriteMovies.splice(favoriteMoviesState.movies.indexOf(favedMovie[0]), 1);
+      recieveFavoriteMovies(newfavoriteMovies);
+    } else {
+      const newfavoriteMovies = [...favoriteMoviesState.movies];
+      newfavoriteMovies.push(movie);
+      recieveFavoriteMovies(newfavoriteMovies);
+    }
+  }
+
+  const isFavorited = (movieId: string) => favoriteMoviesState.movies.filter((a: ShortMovie) => a.imdbID === movieId).length > 0;
 
   return (
-    <div>
-      {movie &&
+    <>
+      {movieState.isLoading || !movieState.movie ?
+        <span>{'Loading...'}</span>
+        :
         <>
-          <h1>{movie.Title}</h1>
+          <h1 className={styles.title}>
+            <span>
+              {movieState.movie.Title}
+            </span>
+            <FontAwesomeIcon icon={faStar} className={`${styles.star} ${isFavorited(movieState.movie.imdbID) ? styles.starActive : ''}`}
+              onClick={(e: MouseEvent) => {
+                e.preventDefault();
+                toggleFav(movieState.movie);
+              }}
+            />
+          </h1>
           <div className={styles.movieInfo}>
-            {movie.Poster !== 'N/A' && <img className={styles.movieImage} src={movie.Poster} alt={movie.Title} />}
-            <ul className={styles.list}>
-              <li className={styles.listItem}>
-                <span>Year:</span>
-                <span>{movie.Year}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Rated:</span>
-                <span>{movie.Rated}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Released:</span>
-                <span>{movie.Released}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Runtime:</span>
-                <span>{movie.Runtime}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Genre:</span>
-                <span>{movie.Genre}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Director:</span>
-                <span>{movie.Director}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Writer:</span>
-                <span>{movie.Writer}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Actors:</span>
-                <span>{movie.Actors}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Plot:</span>
-                <p>{movie.Plot}</p>
-              </li>
-              <li className={styles.listItem}>
-                <span>Language:</span>
-                <span>{movie.Language}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Country:</span>
-                <span>{movie.Country}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Awards:</span>
-                <span>{movie.Awards}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Metascore:</span>
-                <span>{movie.Metascore}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>imdb rating:</span>
-                <span>{movie.imdbRating}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>imdb votes:</span>
-                <span>{movie.imdbVotes}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>DVD released:</span>
-                <span>{movie.DVD}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>BoxOffice:</span>
-                <span>{movie.BoxOffice}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Production:</span>
-                <span>{movie.Production}</span>
-              </li>
-              <li className={styles.listItem}>
-                <span>Website:</span>
-                <span>{movie.Website}</span>
-              </li>
-            </ul>
+            {movieState.movie.Poster !== 'N/A' && <img className={styles.movieImage} src={movieState.movie.Poster} alt={movieState.movie.Title} />}
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th className={`${styles.tableHeader} ${styles.tableHeaderLarge}`} colSpan={2}>{'Info'}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {Object.keys(movieState.movie).map((key, i) => {
+                  const value = Object.values(movieState.movie)[i];
+                  if(key !== 'Title' && key !== 'Poster' && key !== 'Response' && key !== 'imdbID'
+                    && key !== 'imdbRating' && key !== 'imdbVotes' && key !== 'Type'
+                    && typeof value === 'string' && value !== 'N/A') {
+                    return (
+                      <tr key={i}>
+                        <td className={styles.tableHeader}>{key}</td>
+                        <td>{value}</td>
+                      </tr>
+                    )
+                  }
+                  return false;
+                })}
+                <tr>
+                  <td className={`${styles.tableHeader} ${styles.tableHeaderLarge}`} colSpan={2}>{'Ratings'}</td>
+                </tr>
+                {movieState.movie.Ratings && movieState.movie.Ratings.map((rating, i) =>
+                  <tr key={i}>
+                    <td className={styles.tableHeader}>{rating.Source}</td>
+                    <td>{rating.Value}</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </>
       }
-    </div>
+    </>
   )
 }
 
-export default MoviePage;
+const mapStateToProps = (state: State) => ({ movieState: state.movieDetail, favoriteMoviesState: state.favoriteMovies });
+const mapDispatchToProps = (dispatch: any) => bindActionCreators({ requestMovieDetail, recieveFavoriteMovies: requestFavoriteMoviesSuccess }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(MoviePage);

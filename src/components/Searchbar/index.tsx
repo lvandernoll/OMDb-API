@@ -1,16 +1,18 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
-import styles from './Searchbar.module.scss';
+import React, { useState, FormEvent } from 'react';
+import { useHistory } from 'react-router-dom';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { ShortMovie } from 'interfaces';
-import { useHistory } from 'react-router-dom';
+import { requestSearchMovies } from 'actions';
+import styles from './Searchbar.module.scss';
 
 interface Props {
   className?: string,
-  setMovies: Dispatch<SetStateAction<ShortMovie[]>>,
+  requestSearchMovies: (query: string) => Object,
 }
 
-const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
+const Searchbar: React.FC<Props> = ({ className, requestSearchMovies }) => {
   const [value, setValue] = useState<string>('');
   const [history, setHistory] = useState<string[]>([]);
   const [searchOpened, setSearchOpened] = useState<boolean>(false);
@@ -18,30 +20,31 @@ const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
 
   const search = () => {
     if(value) {
-      browserHistory.push('/');
-      const newHistory: string[] = history;
+      browserHistory.push('/search');
+      const newHistory: string[] = [...history];
       newHistory.unshift(value);
       if(newHistory.length > 10) {
         newHistory.pop();
       }
       setHistory(newHistory);
-      const apiUrl: string = 'http://www.omdbapi.com';
-      const apiKey: string | undefined = process.env.REACT_APP_API_KEY;
-      fetch(encodeURI(`${apiUrl}?apiKey=${apiKey}&s=${value}`))
-      .then(response => response.json())
-      .then(data => setMovies(data.Search))
-      .catch(console.error);
+      requestSearchMovies(value);
+    }
+  }
+
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    search();
+    setSearchOpened(false);
+    const searchElement: HTMLInputElement | null = document.querySelector('#search');
+    if(searchElement) {
+      searchElement.blur();
     }
   }
 
   return (
-    <form autoComplete='off' className={`${styles.wrapper} ${className || ''}`} onSubmit={e => {
-      e.preventDefault();
-      search();
-      setSearchOpened(false);
-    }}>
-      <input name='search' id='search' autoComplete='false' className={styles.input}
-        onClick={() => setSearchOpened(true)}
+    <form onSubmit={onSubmit} autoComplete='off' className={`${styles.wrapper} ${className || ''}`}>
+      <input name='search' id='search' className={styles.input} placeholder={'Search...'}
+        onFocus={() => setSearchOpened(true)}
         onBlur={() => setSearchOpened(false)}
         onChange={e => setValue(e.currentTarget.value)}
         value={value} />
@@ -50,7 +53,7 @@ const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
       </button>
       {searchOpened && history &&
         <ul className={styles.history}>
-          {history.map((item, i) => 
+          {history.map((item, i) =>
             <li className={styles.historyItem} key={i}
               onMouseDown={() => {
                 setValue(item);
@@ -74,4 +77,6 @@ const Searchbar: React.FC<Props> = ({ className, setMovies }) => {
   )
 }
 
-export default Searchbar;
+const mapDispatchToProps = (dispatch: any) => bindActionCreators({ requestSearchMovies }, dispatch);
+
+export default connect(null, mapDispatchToProps)(Searchbar);

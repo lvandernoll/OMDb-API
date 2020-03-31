@@ -1,40 +1,57 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
+  Link,
+  Route,
   BrowserRouter as Router,
   Switch,
-  Route,
 } from 'react-router-dom';
-import styles from './App.module.scss';
-import HomePage from 'pages/Home';
+import { Provider } from 'react-redux';
+import { faHome, faStar } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import MoviePage from 'pages/Movie';
+import SearchPage from 'pages/Search';
+import FavoritesPage from 'pages/Favorites';
 import Searchbar from 'components/Searchbar';
-import { ShortMovie } from 'interfaces';
+import styles from './App.module.scss';
+import store from 'store';
 
 const App: React.FC = () => {
-  const [movies, setMovies] = useState<ShortMovie[]>([]);
-
   return (
-    <div className={styles.wrapper}>
+    <Provider store={store}>
       <Router>
-        <header className={styles.header}>
-          <Searchbar setMovies={setMovies} className={styles.search}/>
-        </header>
-        <div className={styles.content}>
-          <Switch>
-            <Route exact path='/'>
-              <HomePage movies={movies} />
-            </Route>
-            <Route exact path='/movie/:id'>
-              <MoviePage />
-            </Route>
-            <Route>
-              <HomePage movies={movies} />
-            </Route>
-          </Switch>
+        <div className={styles.wrapper}>
+          <header className={styles.header}>
+            <Link to='/'>
+              <FontAwesomeIcon icon={faHome} className={styles.icon} />
+            </Link>
+            <Searchbar className={styles.search} />
+            <Link to='/favorites'>
+              <FontAwesomeIcon icon={faStar} className={styles.icon} />
+            </Link>
+          </header>
+          <div className={styles.content}>
+            <Switch>
+              <Route exact path='/'>
+                <h1>{'Homepage'}</h1>
+              </Route>
+              <Route exact path='/search'>
+                <SearchPage />
+              </Route>
+              <Route exact path='/movie/:id'>
+                <MoviePage />
+              </Route>
+              <Route exact path='/favorites'>
+                <FavoritesPage />
+              </Route>
+              <Route>
+                <SearchPage />
+              </Route>
+            </Switch>
+          </div>
+          <footer className={styles.footer} />
         </div>
-        <footer className={styles.footer} />
       </Router>
-    </div>
+    </Provider>
   );
 }
 

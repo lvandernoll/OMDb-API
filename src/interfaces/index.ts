@@ -37,3 +37,35 @@ export interface FullMovie {
   Production: string,
   Website: string,
 }
+
+export interface HelloWorldAction {
+  type: string,
+  payload: string,
+}
+
+export interface SearchMoviesAction {
+  type: string,
+  payload: {
+    query?: string,
+    movies?: ShortMovie[],
+    errorMessage?: string,
+  },
+}
+
+export interface MovieDetailAction {
+  type: string,
+  error: boolean,
+  isLoading: boolean,
+  payload: {
+    id?: string,
+    movie?: FullMovie,
+    errorMessage?: string,
+  },
+}
+
+export interface FavoriteMoviesAction {
+  type: string,
+  payload: {
+    movies: ShortMovie[],
+  },
+}
